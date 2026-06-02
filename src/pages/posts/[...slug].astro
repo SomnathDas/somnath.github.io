@@ -1,8 +1,8 @@
 ---
+import { render } from "astro:content";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { getAllPosts } from "@/data/post";
 import PostLayout from "@/layouts/BlogPost.astro";
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import { render } from "astro:content";
 
 // getStaticPaths won't run under an SSR adapter: https://docs.astro.build/en/guides/routing/#modifying-the-slug-example-for-ssr
 export const getStaticPaths = (async () => {

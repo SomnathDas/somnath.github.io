@@ -24,7 +24,9 @@
 			const bg = getComputedStyle(document.body).getPropertyValue("--theme-bg");
 			meta.setAttribute("content", `hsl(${bg})`);
 		}
-		try { localStorage.setItem("theme", newTheme); } catch {}
+		try {
+			localStorage.setItem("theme", newTheme);
+		} catch {}
 	}
 
 	document.addEventListener("theme-change", (e) => setTheme(e.detail.theme));

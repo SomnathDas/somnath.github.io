@@ -16,7 +16,9 @@
 		font-weight: 500;
 		line-height: 1.4;
 		cursor: pointer;
-		transition: background 0.2s ease, color 0.2s ease;
+		transition:
+			background 0.2s ease,
+			color 0.2s ease;
 	}
 	.theme-toggle:hover {
 		background: var(--accent-soft-strong);
@@ -35,16 +37,24 @@
 		text-align: center;
 		transform: translateY(-1px);
 	}
-	.theme-toggle .icon::before { content: "☾"; }
-	[data-theme="dark"] .theme-toggle .icon::before { content: "☀"; }
+	.theme-toggle .icon::before {
+		content: "☾";
+	}
+	[data-theme="dark"] .theme-toggle .icon::before {
+		content: "☀";
+	}
 
 	.theme-toggle .label {
 		display: inline-block;
 		min-width: 2.6em;
 		text-align: left;
 	}
-	.theme-toggle .label::before { content: "Dark"; }
-	[data-theme="dark"] .theme-toggle .label::before { content: "Light"; }
+	.theme-toggle .label::before {
+		content: "Dark";
+	}
+	[data-theme="dark"] .theme-toggle .label::before {
+		content: "Light";
+	}
 </style>
 
 <script>
@@ -54,7 +64,9 @@
 		btn.addEventListener("click", () => {
 			const next = r.dataset.theme === "dark" ? "light" : "dark";
 			r.dataset.theme = next;
-			try { localStorage.setItem("theme", next); } catch {}
+			try {
+				localStorage.setItem("theme", next);
+			} catch {}
 			document.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: next } }));
 		});
 	}

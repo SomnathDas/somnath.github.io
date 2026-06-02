@@ -1,9 +1,9 @@
 ---
 import { getEntry, render } from "astro:content";
+import { Schema } from "astro-seo-schema";
 import PageLayout from "@/layouts/Base.astro";
 import { siteConfig } from "@/site-config";
 import { absoluteUrl } from "@/utils/path";
-import { Schema } from "astro-seo-schema";
 
 const entry = await getEntry("page", "about");
 if (!entry) throw new Error("Missing src/content/page/about.md");
@@ -106,7 +106,9 @@ const avatarUrl = profile?.avatar ? absoluteUrl(profile.avatar, Astro.site) : un
 		text-decoration-color: hsl(var(--theme-text) / 0.35);
 		text-decoration-thickness: 1px;
 		text-underline-offset: 3px;
-		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
 	}
 	.bio :global(a:hover) {
 		color: hsl(var(--theme-accent));

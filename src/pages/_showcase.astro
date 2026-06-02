@@ -1,7 +1,7 @@
 ---
+import { Schema } from "astro-seo-schema";
 import { showcase } from "@/data/showcase";
 import PageLayout from "@/layouts/Base.astro";
-import { Schema } from "astro-seo-schema";
 
 const siteUrl = (path: string) => new URL(path, Astro.site).toString();
 ---
@@ -30,9 +30,7 @@ const siteUrl = (path: string) => new URL(path, Astro.site).toString();
 <PageLayout meta={{ title: "Showcase" }}>
 	<section class="work" aria-labelledby="work-label">
 		<div class="section-label" id="work-label">Showcase</div>
-		<p class="intro">
-			A handful of projects I've built.
-		</p>
+		<p class="intro">A handful of projects I've built.</p>
 		<ul class="work-list">
 			{
 				showcase.map((item) => (

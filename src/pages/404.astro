@@ -13,15 +13,18 @@ const meta = {
 		<div class="eyebrow">Error · 404</div>
 		<h1>This page wandered off.</h1>
 		<p>
-			The page you were looking for doesn't exist. It may have been moved, renamed,
-			or just isn't there yet. Try the <a href={withBase("/")}>home</a> page, or browse the
+			The page you were looking for doesn't exist. It may have been moved, renamed, or just isn't
+			there yet. Try the <a href={withBase("/")}>home</a> page, or browse the
 			<a href={withBase("/posts/")}>writing</a>.
 		</p>
 	</section>
 </PageLayout>
 
 <style>
-	.not-found { padding: 24px 0 80px; max-width: 56ch; }
+	.not-found {
+		padding: 24px 0 80px;
+		max-width: 56ch;
+	}
 	.eyebrow {
 		font-family: var(--font-mono);
 		font-size: 11.5px;
@@ -52,5 +55,7 @@ const meta = {
 		padding-bottom: 1px;
 		transition: border-color 0.2s ease;
 	}
-	.not-found a:hover { border-color: hsl(var(--theme-accent)); }
+	.not-found a:hover {
+		border-color: hsl(var(--theme-accent));
+	}
 </style>

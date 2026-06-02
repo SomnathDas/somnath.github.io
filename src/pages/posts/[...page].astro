@@ -1,10 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import type { GetStaticPaths, Page } from "astro";
 import { getAllPosts, getPostSortDate, sortMDByDate } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
 import { formatRailDate } from "@/utils/date";
 import { withBase } from "@/utils/path";
-import type { GetStaticPaths, Page } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const MAX_POSTS_PER_PAGE = 1000;
@@ -112,7 +112,9 @@ const totalCount = page.total;
 		text-decoration-color: hsl(var(--theme-text) / 0.35);
 		text-decoration-thickness: 1px;
 		text-underline-offset: 3px;
-		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
 	}
 	.pag-link.prev {
 		margin-right: auto;

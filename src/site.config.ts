@@ -1,5 +1,5 @@
-import type { SiteConfig } from "@/types";
 import type { AstroExpressiveCodeOptions } from "astro-expressive-code";
+import type { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
 	author: "Somnath Das",
@@ -11,8 +11,7 @@ export const siteConfig: SiteConfig = {
 			year: "numeric",
 		},
 	},
-	description:
-		"A blog about whatever I learn whenever I poke around computers.",
+	description: "A blog about whatever I learn whenever I poke around computers.",
 	lang: "en-US",
 	ogLocale: "en_US",
 	sortPostsByUpdatedDate: false,
@@ -29,13 +28,6 @@ export const siteConfig: SiteConfig = {
 		// alumni: "Example University",
 		avatar: "/avatar.png",
 	},
-	// Uncomment & fill in to enable Giscus comments on every post.
-	// comments: {
-	// 	repo: "your-handle/your-repo",
-	// 	repoId: "...",
-	// 	category: "General",
-	// 	categoryId: "...",
-	// },
 };
 
 export const menuLinks: { path: string; title: string }[] = [

@@ -136,7 +136,10 @@ const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${enco
 		cursor: pointer;
 		text-decoration: none;
 		line-height: 1.4;
-		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease,
+			border-color 0.2s ease;
 	}
 	.share-btn:hover,
 	.share-btn:focus-visible {
@@ -159,8 +162,13 @@ const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${enco
 	}
 
 	@media (max-width: 420px) {
-		.share { gap: 10px; }
-		.share-btn { padding: 4px 8px; font-size: 10.5px; }
+		.share {
+			gap: 10px;
+		}
+		.share-btn {
+			padding: 4px 8px;
+			font-size: 10.5px;
+		}
 	}
 </style>
 

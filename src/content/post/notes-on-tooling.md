@@ -1,7 +1,7 @@
 ---
 title: "Notes on the tooling"
 publishDate: 2026-01-25
-description: "What's underneath this template — Astro, Pagefind, Giscus, KaTeX — and why each piece is here."
+description: "What's underneath this template — Astro, Pagefind, KaTeX — and why each piece is here."
 tags: [ tooling, internals, astro ]
 ---
 
@@ -31,18 +31,8 @@ fully static and will deploy as a folder of HTML on any host — Cloudflare Page
 Pagefind builds a full-text index at `dist/pagefind/` after every `pnpm build`. The template doesn't ship a search UI —
 wire one up with `pagefind-default-ui` if you want.
 
-## Comments
-
-[Giscus](https://giscus.app) — comments stored as GitHub Discussions. Set `siteConfig.comments` with your repo's IDs to
-enable. Custom themes live at `public/giscus-{light,dark}.css`.
-
 ## Analytics
 
 Both [GA4](https://analytics.google.com) and [Goatcounter](https://www.goatcounter.com) are pre-wired and load
 via [Partytown](https://partytown.qwik.dev/) so they run on a worker thread, not the main thread. Set the IDs in
 `siteConfig.analytics`. Leave them undefined to skip the scripts.
-
-## Webmentions
-
-Optional. Set `siteConfig.webmentions.link` and add a `WEBMENTION_API_KEY` to `.env`. Mentions are fetched
-from [webmention.io](https://webmention.io) at build time and cached locally.

@@ -1,16 +1,13 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
 import { Image } from "astro:assets";
-
+import { type CollectionEntry, render } from "astro:content";
+import { Schema } from "astro-seo-schema";
 import ShareButtons from "@/components/blog/ShareButtons.astro";
-import WebMentions from "@/components/blog/webmentions/index.astro";
 import { getAllPosts, sortMDByDate } from "@/data/post";
 import { siteConfig } from "@/site-config";
 import { formatBylineDate, formatEyebrowDate } from "@/utils/date";
 import { absoluteUrl, withBase } from "@/utils/path";
-
 import BaseLayout from "./Base.astro";
-import { Schema } from "astro-seo-schema";
 
 interface Props {
 	post: CollectionEntry<"post">;
@@ -31,7 +28,6 @@ const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { remarkPluginFrontmatter, headings } = await render(post);
 
 const authorName = siteConfig.profile?.name ?? siteConfig.author;
-const comments = siteConfig.comments;
 const postUrl = absoluteUrl(`/posts/${slug}/`, Astro.site);
 const socialImageAbsolute = absoluteUrl(socialImage, Astro.site);
 
@@ -44,14 +40,6 @@ const bylineDate = formatBylineDate(publishDate);
 // Prefer remark plugin's value; fall back to "".
 const readingTime: string =
 	(remarkPluginFrontmatter as { minutesRead?: string })?.minutesRead ?? "";
-
-// Custom giscus themes only in prod: the giscus.app iframe can't fetch CSS from localhost / private IPs.
-const giscusThemes = import.meta.env.PROD
-	? {
-			light: new URL("/giscus-light.css", Astro.site).toString(),
-			dark: new URL("/giscus-dark.css", Astro.site).toString(),
-		}
-	: { light: "noborder_light", dark: "noborder_dark" };
 ---
 
 <Schema
@@ -77,50 +65,67 @@ const giscusThemes = import.meta.env.PROD
 			<div class="post-header-main">
 				<div id="blog-hero" class="post-header">
 					<div class="post-eyebrow">
-						Posts <span class="sep">·</span> {eyebrowDate}
+						Posts <span class="sep">·</span>
+						{eyebrowDate}
 					</div>
 					{draft && <span class="draft-flag">(Draft)</span>}
 					<h1 class="post-title">{title}</h1>
 					<p class="byline">
-						{authorName && <>By {authorName}<span class="sep">·</span></>}{bylineDate}{readingTime && (
-							<>
-								<span class="sep">·</span>{readingTime}
-							</>
-						)}
-					</p>
-					{!!tags?.length && (
-						<div class="post-tags">
-							{tags.map((tag, i) => (
+						{
+							authorName && (
 								<>
-									<span data-pagefind-filter="tag">{tag}</span>{i < tags.length - 1 && <span class="sep">·</span>}
+									By {authorName}
+									<span class="sep">·</span>
 								</>
-							))}
-						</div>
-					)}
-					{updatedDate && (
-						<div class="post-updated">
-							Updated <time datetime={updatedDate.toISOString()}>
-								{formatBylineDate(updatedDate)}
-							</time>
-						</div>
-					)}
+							)
+						}{bylineDate}{
+							readingTime && (
+								<>
+									<span class="sep">·</span>
+									{readingTime}
+								</>
+							)
+						}
+					</p>
+					{
+						!!tags?.length && (
+							<div class="post-tags">
+								{tags.map((tag, i) => (
+									<>
+										<span data-pagefind-filter="tag">{tag}</span>
+										{i < tags.length - 1 && <span class="sep">·</span>}
+									</>
+								))}
+							</div>
+						)
+					}
+					{
+						updatedDate && (
+							<div class="post-updated">
+								Updated{" "}
+								<time datetime={updatedDate.toISOString()}>{formatBylineDate(updatedDate)}</time>
+							</div>
+						)
+					}
 				</div>
 
-				{coverImage ? (
-					<figure class="post-cover">
-						<Image
-							src={coverImage.src}
-							alt={coverImage.alt}
-							loading="eager"
-							fetchpriority="high"
-							decoding="async"
-							widths={[480, 720, 960, 1280]}
-							sizes="(max-width: 720px) 92vw, 696px"
-						/>
-					</figure>
-				) : (
-					<hr class="rule" />
-				)}
+				{
+					coverImage ? (
+						<figure class="post-cover">
+							<Image
+								src={coverImage.src}
+								alt={coverImage.alt}
+								loading="eager"
+								fetchpriority="high"
+								decoding="async"
+								widths={[480, 720, 960, 1280]}
+								sizes="(max-width: 720px) 92vw, 696px"
+							/>
+						</figure>
+					) : (
+						<hr class="rule" />
+					)
+				}
 			</div>
 			<div class="post-header-spacer"></div>
 		</header>
@@ -133,28 +138,34 @@ const giscusThemes = import.meta.env.PROD
 
 				<ShareButtons title={title} url={postUrl} description={description} />
 
-				<WebMentions />
-
 				<hr class="rule rule--footer" />
 
-				{(olderPost || newerPost) && (
-					<nav class="post-pager" aria-label="More posts">
-						{olderPost && (
-							<a class="pager-link prev" data-astro-prefetch href={withBase(`/posts/${olderPost.id}/`)}>
-								<span class="pager-eyebrow">Older</span>
-								<span class="pager-title">{olderPost.data.title}</span>
-							</a>
-						)}
-						{newerPost && (
-							<a class="pager-link next" data-astro-prefetch href={withBase(`/posts/${newerPost.id}/`)}>
-								<span class="pager-eyebrow">Newer</span>
-								<span class="pager-title">{newerPost.data.title}</span>
-							</a>
-						)}
-					</nav>
-				)}
-
-				{comments && <div class="comments" id="comments"></div>}
+				{
+					(olderPost || newerPost) && (
+						<nav class="post-pager" aria-label="More posts">
+							{olderPost && (
+								<a
+									class="pager-link prev"
+									data-astro-prefetch
+									href={withBase(`/posts/${olderPost.id}/`)}
+								>
+									<span class="pager-eyebrow">Older</span>
+									<span class="pager-title">{olderPost.data.title}</span>
+								</a>
+							)}
+							{newerPost && (
+								<a
+									class="pager-link next"
+									data-astro-prefetch
+									href={withBase(`/posts/${newerPost.id}/`)}
+								>
+									<span class="pager-eyebrow">Newer</span>
+									<span class="pager-title">{newerPost.data.title}</span>
+								</a>
+							)}
+						</nav>
+					)
+				}
 			</div>
 			{
 				headings.length > 0 && (
@@ -167,7 +178,7 @@ const giscusThemes = import.meta.env.PROD
 										.filter((h) => h.depth === 2 || h.depth === 3)
 										.map((heading, index) => (
 											<li class={`toc-item depth-${heading.depth}`}>
-												<span class="toc-marker"></span>
+												<span class="toc-marker" />
 												<a href={`#${heading.slug}`} class="toc-link">
 													<span class="toc-number">{index + 1}</span>
 													<span class="toc-text">{heading.text}</span>
@@ -179,7 +190,13 @@ const giscusThemes = import.meta.env.PROD
 							{headings.filter((h) => h.depth === 2 || h.depth === 3).length > 3 && (
 								<button type="button" class="toc-toggle" id="toc-toggle">
 									<span class="toggle-text">Show all</span>
-									<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<svg
+										class="toggle-icon"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
 										<path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
 									</svg>
 								</button>
@@ -191,12 +208,7 @@ const giscusThemes = import.meta.env.PROD
 		</div>
 	</div>
 
-	<button
-		aria-label="Back to Top"
-		class="to-top-btn"
-		data-show="false"
-		id="to-top-btn"
-	>
+	<button aria-label="Back to Top" class="to-top-btn" data-show="false" id="to-top-btn">
 		<svg
 			aria-hidden="true"
 			fill="none"
@@ -284,7 +296,9 @@ const giscusThemes = import.meta.env.PROD
 		border: 1px solid var(--hairline);
 		border-radius: 8px;
 		padding: 20px;
-		transition: background-color 0.35s ease, border-color 0.35s ease;
+		transition:
+			background-color 0.35s ease,
+			border-color 0.35s ease;
 	}
 
 	.toc-title {
@@ -347,7 +361,9 @@ const giscusThemes = import.meta.env.PROD
 		margin-right: 14px;
 		flex-shrink: 0;
 		z-index: 3;
-		transition: border-color 0.25s ease, background-color 0.25s ease;
+		transition:
+			border-color 0.25s ease,
+			background-color 0.25s ease;
 	}
 
 	.toc-link {
@@ -435,7 +451,7 @@ const giscusThemes = import.meta.env.PROD
 
 	/* Collapsible Logic */
 	@media (max-width: 1100px) {
-		.toc-card.is-collapsed .toc-item:nth-child(n+4) {
+		.toc-card.is-collapsed .toc-item:nth-child(n + 4) {
 			display: none;
 		}
 	}
@@ -445,7 +461,6 @@ const giscusThemes = import.meta.env.PROD
 			display: none;
 		}
 	}
-
 
 	.post-cover {
 		margin: 0 0 36px;
@@ -554,10 +569,6 @@ const giscusThemes = import.meta.env.PROD
 		margin: 56px 0 28px;
 	}
 
-	/* Match article body width */
-	.comments { max-width: var(--reading-width); margin: 56px 0 32px; }
-	.comments .giscus { max-width: 100%; }
-
 	/* Prev/Next post navigation */
 	.post-pager {
 		display: grid;
@@ -576,8 +587,12 @@ const giscusThemes = import.meta.env.PROD
 	.pager-link.next {
 		text-align: right;
 	}
-	.pager-link.prev:hover { transform: translateX(-2px); }
-	.pager-link.next:hover { transform: translateX(2px); }
+	.pager-link.prev:hover {
+		transform: translateX(-2px);
+	}
+	.pager-link.next:hover {
+		transform: translateX(2px);
+	}
 	.pager-eyebrow {
 		display: block;
 		font-family: var(--font-mono);
@@ -588,8 +603,12 @@ const giscusThemes = import.meta.env.PROD
 		color: hsl(var(--theme-text) / 0.72);
 		margin-bottom: 8px;
 	}
-	.pager-link.prev .pager-eyebrow::before { content: "← "; }
-	.pager-link.next .pager-eyebrow::after { content: " →"; }
+	.pager-link.prev .pager-eyebrow::before {
+		content: "← ";
+	}
+	.pager-link.next .pager-eyebrow::after {
+		content: " →";
+	}
 	.pager-title {
 		display: block;
 		font-family: var(--font-serif);
@@ -642,7 +661,11 @@ const giscusThemes = import.meta.env.PROD
 		cursor: pointer;
 		opacity: 0;
 		transform: translateY(28px);
-		transition: opacity 0.3s ease, transform 0.3s ease, color 0.2s ease, border-color 0.2s ease;
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease,
+			color 0.2s ease,
+			border-color 0.2s ease;
 		z-index: 90;
 	}
 	.to-top-btn[data-show="true"] {
@@ -667,17 +690,38 @@ const giscusThemes = import.meta.env.PROD
 	}
 
 	@media (max-width: 720px) {
-		.post-title { font-size: 30px; line-height: 1.15; }
-		.byline { font-size: 15.5px; }
-		.rule { margin-bottom: 32px; }
+		.post-title {
+			font-size: 30px;
+			line-height: 1.15;
+		}
+		.byline {
+			font-size: 15.5px;
+		}
+		.rule {
+			margin-bottom: 32px;
+		}
 	}
 	@media (max-width: 420px) {
-		.post-eyebrow { font-size: 11px; margin-bottom: 18px; }
-		.post-eyebrow .sep { margin: 0 6px; }
-		.post-title { font-size: 26px; }
-		.byline { font-size: 14.5px; margin-bottom: 24px; }
-		.rule { margin-bottom: 26px; }
-		.post-end { font-size: 14px; }
+		.post-eyebrow {
+			font-size: 11px;
+			margin-bottom: 18px;
+		}
+		.post-eyebrow .sep {
+			margin: 0 6px;
+		}
+		.post-title {
+			font-size: 26px;
+		}
+		.byline {
+			font-size: 14.5px;
+			margin-bottom: 24px;
+		}
+		.rule {
+			margin-bottom: 26px;
+		}
+		.post-end {
+			font-size: 14px;
+		}
 	}
 
 	.post-end a:focus-visible,
@@ -767,7 +811,9 @@ const giscusThemes = import.meta.env.PROD
 		text-underline-offset: 3px;
 		word-break: break-word;
 		overflow-wrap: anywhere;
-		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
 	}
 	.post-article a:hover {
 		color: hsl(var(--theme-accent));
@@ -784,7 +830,9 @@ const giscusThemes = import.meta.env.PROD
 		color: hsl(var(--theme-text-muted));
 		font-variant-numeric: tabular-nums;
 		font-feature-settings: "tnum";
-		transition: background-color 0.35s ease, border-color 0.35s ease;
+		transition:
+			background-color 0.35s ease,
+			border-color 0.35s ease;
 	}
 
 	.post-article pre {
@@ -797,7 +845,9 @@ const giscusThemes = import.meta.env.PROD
 		max-width: 100%;
 		font-size: 14px;
 		line-height: 1.7;
-		transition: background-color 0.35s ease, border-color 0.35s ease;
+		transition:
+			background-color 0.35s ease,
+			border-color 0.35s ease;
 	}
 	.post-article pre code {
 		background: transparent;
@@ -1025,10 +1075,20 @@ const giscusThemes = import.meta.env.PROD
 			font-size: 17px;
 			line-height: 1.72;
 		}
-		.post-article h2 { font-size: 23px; margin: 44px 0 16px; }
-		.post-article h3 { font-size: 18.5px; margin: 30px 0 12px; }
-		.post-article :not(pre) > code { font-size: 13.5px; }
-		.post-article figure { margin: 28px 0; }
+		.post-article h2 {
+			font-size: 23px;
+			margin: 44px 0 16px;
+		}
+		.post-article h3 {
+			font-size: 18.5px;
+			margin: 30px 0 12px;
+		}
+		.post-article :not(pre) > code {
+			font-size: 13.5px;
+		}
+		.post-article figure {
+			margin: 28px 0;
+		}
 	}
 	@media (max-width: 420px) {
 		.post-article > p,
@@ -1037,12 +1097,27 @@ const giscusThemes = import.meta.env.PROD
 			font-size: 16px;
 			line-height: 1.7;
 		}
-		.post-article h2 { font-size: 20px; margin: 36px 0 14px; }
-		.post-article h3 { font-size: 17px; margin: 26px 0 10px; }
-		.post-article ul { padding-left: 0; }
-		.post-article ul li { padding-left: 18px; }
-		.post-article blockquote { padding-left: 16px; font-size: 16.5px; }
-		.post-article figcaption { font-size: 13.5px; }
+		.post-article h2 {
+			font-size: 20px;
+			margin: 36px 0 14px;
+		}
+		.post-article h3 {
+			font-size: 17px;
+			margin: 26px 0 10px;
+		}
+		.post-article ul {
+			padding-left: 0;
+		}
+		.post-article ul li {
+			padding-left: 18px;
+		}
+		.post-article blockquote {
+			padding-left: 16px;
+			font-size: 16.5px;
+		}
+		.post-article figcaption {
+			font-size: 13.5px;
+		}
 	}
 
 	.post-article a:focus-visible {
@@ -1052,41 +1127,6 @@ const giscusThemes = import.meta.env.PROD
 	}
 </style>
 
-{comments && (
-	<script is:inline define:vars={{ comments, giscusThemes }}>
-		document.addEventListener("DOMContentLoaded", () => {
-			const mount = document.getElementById("comments");
-			if (!mount) return;
-			const theme = document.documentElement.getAttribute("data-theme");
-			const script = document.createElement("script");
-			script.src = "https://giscus.app/client.js";
-			script.setAttribute("data-repo", comments.repo);
-			script.setAttribute("data-repo-id", comments.repoId);
-			script.setAttribute("data-category", comments.category);
-			script.setAttribute("data-category-id", comments.categoryId);
-			script.setAttribute("data-mapping", "title");
-			script.setAttribute("data-strict", "0");
-			script.setAttribute("data-reactions-enabled", "1");
-			script.setAttribute("data-emit-metadata", "0");
-			script.setAttribute("data-input-position", "top");
-			script.setAttribute("data-theme", theme === "dark" ? giscusThemes.dark : giscusThemes.light);
-			script.setAttribute("data-lang", "en");
-			script.setAttribute("crossorigin", "anonymous");
-			script.async = true;
-			mount.appendChild(script);
-
-			document.addEventListener("theme-change", (e) => {
-				const iframe = document.querySelector("iframe.giscus-frame");
-				if (iframe && iframe.contentWindow) {
-					iframe.contentWindow.postMessage(
-						{ giscus: { setConfig: { theme: e.detail.theme === "dark" ? giscusThemes.dark : giscusThemes.light } } },
-						"https://giscus.app",
-					);
-				}
-			});
-		});
-	</script>
-)}
 <script>
 	const scrollBtn = document.getElementById("to-top-btn") as HTMLButtonElement | null;
 	const heroEl = document.getElementById("blog-hero") as HTMLDivElement | null;
@@ -1101,10 +1141,7 @@ const giscusThemes = import.meta.env.PROD
 		);
 	}
 
-
-	const lazyImgs = document.querySelectorAll<HTMLImageElement>(
-		'.post-article img[loading="lazy"]',
-	);
+	const lazyImgs = document.querySelectorAll<HTMLImageElement>('.post-article img[loading="lazy"]');
 	if (lazyImgs.length && "IntersectionObserver" in window) {
 		const io = new IntersectionObserver(
 			(entries) => {
@@ -1121,7 +1158,11 @@ const giscusThemes = import.meta.env.PROD
 	}
 
 	const slugify = (s: string) =>
-		s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+		s
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9]+/g, "-")
+			.replace(/^-+|-+$/g, "");
 	const usedIds = new Set<string>();
 	document
 		.querySelectorAll<HTMLHeadingElement>(".post-article h2, .post-article h3")
@@ -1167,13 +1208,14 @@ const giscusThemes = import.meta.env.PROD
 	// Table of Contents Active Link Highlight
 	const tocLinks = document.querySelectorAll<HTMLAnchorElement>(".post-toc-wrapper a");
 	const headingElements = Array.from(
-		document.querySelectorAll<HTMLHeadingElement>(".post-article h2, .post-article h3")
+		document.querySelectorAll<HTMLHeadingElement>(".post-article h2, .post-article h3"),
 	);
 
 	if (tocLinks.length > 0 && headingElements.length > 0) {
 		const updateActiveHeading = () => {
 			let activeId: string | null = null;
-			const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
+			const isAtBottom =
+				window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
 
 			if (isAtBottom) {
 				activeId = headingElements[headingElements.length - 1].id;

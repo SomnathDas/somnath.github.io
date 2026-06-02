@@ -1,11 +1,11 @@
 ---
+import { Schema } from "astro-seo-schema";
 import { getAllPosts, getPostSortDate, sortMDByDate } from "@/data/post";
 import { showcase } from "@/data/showcase";
 import PageLayout from "@/layouts/Base.astro";
 import { siteConfig } from "@/site-config";
 import { formatRailDate, formatStampDate } from "@/utils/date";
 import { absoluteUrl, withBase } from "@/utils/path";
-import { Schema } from "astro-seo-schema";
 
 const allPosts = await getAllPosts();
 const allPostsByDate = sortMDByDate(allPosts);
@@ -50,24 +50,34 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 	<section class="hero">
 		<p>{siteConfig.description}</p>
 		<div class="socials">
-			{profile?.github && (
-				<>
-					<a href={profile.github} rel="noreferrer" target="_blank">GitHub</a>
-					<span class="sep">·</span>
-				</>
-			)}
-			{profile?.linkedin && (
-				<>
-					<a href={profile.linkedin} rel="noreferrer" target="_blank">LinkedIn</a>
-					<span class="sep">·</span>
-				</>
-			)}
-			{profile?.email && (
-				<>
-					<a href={`mailto:${profile.email}`}>Email</a>
-					<span class="sep">·</span>
-				</>
-			)}
+			{
+				profile?.github && (
+					<>
+						<a href={profile.github} rel="noreferrer" target="_blank">
+							GitHub
+						</a>
+						<span class="sep">·</span>
+					</>
+				)
+			}
+			{
+				profile?.linkedin && (
+					<>
+						<a href={profile.linkedin} rel="noreferrer" target="_blank">
+							LinkedIn
+						</a>
+						<span class="sep">·</span>
+					</>
+				)
+			}
+			{
+				profile?.email && (
+					<>
+						<a href={`mailto:${profile.email}`}>Email</a>
+						<span class="sep">·</span>
+					</>
+				)
+			}
 			<a href={withBase("/rss.xml")}>RSS</a>
 		</div>
 	</section>
@@ -131,32 +141,34 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 			}
 
 			<div class="archive-link" style={`--i: ${rest.length + 1}`}>
-				<a data-astro-prefetch href={withBase("/posts/")}
-					>View all {archiveCount} posts →</a
-				>
+				<a data-astro-prefetch href={withBase("/posts/")}>View all {archiveCount} posts →</a>
 			</div>
 		</div>
 	</section>
 
-	{showcase.length > 0 && (
-		<section class="work" aria-labelledby="work-label">
-			<div class="section-label" id="work-label">Showcase</div>
-			<ul class="work-list">
-				{showcase.map((item, idx) => (
-					<li style={`--i: ${idx + 1}`}>
-						<a href={item.href} rel="noreferrer" target="_blank">
-							<div class="head">
-								<span class="name">{item.name}</span>
-								<span class="stack">{item.stack}</span>
-								{item.badge && <span class="badge">{item.badge}</span>}
-							</div>
-							<p>{item.desc}</p>
-						</a>
-					</li>
-				))}
-			</ul>
-		</section>
-	)}
+	{
+		showcase.length > 0 && (
+			<section class="work" aria-labelledby="work-label">
+				<div class="section-label" id="work-label">
+					Showcase
+				</div>
+				<ul class="work-list">
+					{showcase.map((item, idx) => (
+						<li style={`--i: ${idx + 1}`}>
+							<a href={item.href} rel="noreferrer" target="_blank">
+								<div class="head">
+									<span class="name">{item.name}</span>
+									<span class="stack">{item.stack}</span>
+									{item.badge && <span class="badge">{item.badge}</span>}
+								</div>
+								<p>{item.desc}</p>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
 </PageLayout>
 
 <style>
@@ -185,7 +197,9 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 		text-decoration-color: hsl(var(--theme-text) / 0.35);
 		text-decoration-thickness: 1px;
 		text-underline-offset: 3px;
-		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
 	}
 	.socials a:hover {
 		color: hsl(var(--theme-accent));
@@ -262,7 +276,9 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 		text-decoration-color: hsl(var(--theme-text) / 0.35);
 		text-decoration-thickness: 1px;
 		text-underline-offset: 3px;
-		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
 	}
 	.archive-link a:hover {
 		color: hsl(var(--theme-accent));

@@ -1,3 +1,8 @@
+import { render } from "astro:content";
+import { Resvg } from "@resvg/resvg-js";
+import type { APIContext, InferGetStaticPropsType } from "astro";
+import satori, { type SatoriOptions } from "satori";
+import { html } from "satori-html";
 import JetBrainsMono from "@/assets/fonts/jetbrainsmono-regular.ttf";
 import NewsreaderItalic from "@/assets/fonts/newsreader-italic.ttf";
 import NewsreaderRegular from "@/assets/fonts/newsreader-regular.ttf";
@@ -5,11 +10,6 @@ import NewsreaderSemiBold from "@/assets/fonts/newsreader-semibold.ttf";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site-config";
 import { formatBylineDate, formatEyebrowDate } from "@/utils/date";
-import { Resvg } from "@resvg/resvg-js";
-import type { APIContext, InferGetStaticPropsType } from "astro";
-import { render } from "astro:content";
-import satori, { type SatoriOptions } from "satori";
-import { html } from "satori-html";
 
 const ogOptions: SatoriOptions = {
 	fonts: [
@@ -38,16 +38,20 @@ const markup = (props: {
 	tagsLine: string;
 	host: string;
 }) =>
-	html`<div tw="flex flex-col w-full h-full px-20 py-16" style="background-color: #1a1715; font-family: Newsreader;">
-		<p tw="text-2xl mb-10 tracking-widest uppercase" style="font-family: JetBrains Mono; color: #c89761;">
+	html`<div
+		tw="flex flex-col w-full h-full px-20 py-16"
+		style="background-color: #1a1715; font-family: Newsreader;"
+	>
+		<p
+			tw="text-2xl mb-10 tracking-widest uppercase"
+			style="font-family: JetBrains Mono; color: #c89761;"
+		>
 			${props.eyebrow}
 		</p>
 		<h1 tw="${titleClass(props.title)}" style="color: #fbf6ec; font-weight: 600;">
 			${props.title}
 		</h1>
-		<p tw="text-2xl mb-4" style="font-family: JetBrains Mono; color: #a89c8a;">
-			${props.byline}
-		</p>
+		<p tw="text-2xl mb-4" style="font-family: JetBrains Mono; color: #a89c8a;">${props.byline}</p>
 		<p tw="text-xl tracking-wider uppercase" style="font-family: JetBrains Mono; color: #c89761;">
 			${props.tagsLine}
 		</p>
@@ -99,8 +103,7 @@ export async function getStaticPaths() {
 	const items = await Promise.all(
 		filtered.map(async (post) => {
 			const { remarkPluginFrontmatter } = await render(post);
-			const readingTime =
-				(remarkPluginFrontmatter as { minutesRead?: string })?.minutesRead ?? "";
+			const readingTime = (remarkPluginFrontmatter as { minutesRead?: string })?.minutesRead ?? "";
 			return {
 				params: { slug: post.id },
 				props: {

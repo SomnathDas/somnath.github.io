@@ -25,11 +25,7 @@ export const rehypeBasePath: Plugin<[Options], Root> = ({ base }) => {
 			if (!attr) return;
 			const value = node.properties?.[attr];
 			if (typeof value !== "string") return;
-			if (
-				value.startsWith("/") &&
-				!value.startsWith("//") &&
-				!value.startsWith(`${prefix}/`)
-			) {
+			if (value.startsWith("/") && !value.startsWith("//") && !value.startsWith(`${prefix}/`)) {
 				node.properties[attr] = `${prefix}${value}`;
 			}
 		});

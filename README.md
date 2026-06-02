@@ -1,7 +1,6 @@
 # Astro Sienna
 
-A minimal Astro blog template with serif typography, dark mode, RSS, OG images, and optional Giscus comments and
-analytics.
+A minimal Astro blog template with serif typography, dark mode, RSS, OG images, and optional analytics.
 
 **Live demo:** [Github Pages](https://anjaygoel.github.io/astro-sienna)
 
@@ -19,10 +18,8 @@ analytics.
 - Custom containers (`:::note`, `:::tip`, `:::caution`)
 - Per-post OG images generated at build time (Satori + resvg)
 - RSS feed, sitemap, robots.txt, web manifest
-- Optional [Giscus](https://giscus.app) comments with custom matched themes
 - Optional GA4 and Goatcounter analytics, both loaded via [Partytown](https://partytown.qwik.dev/) so they run on a
   worker thread
-- Optional [webmentions](https://webmention.io), fetched at build and cached locally
 - Perfect Lighthouse scores (Performance, Accessibility, Best Practices, SEO)
 
 ## Quick start
@@ -52,9 +49,9 @@ Open http://localhost:4321.
 
 Most personalisation happens in two files.
 
-**`src/site.config.ts`** holds author, profile, comments, analytics, and webmentions. Every field in `profile` is
+**`src/site.config.ts`** holds author, profile, and analytics. Every field in `profile` is
 optional. Leave any of `email`, `github`, `linkedin`, `employer`, `alumni`, or `avatar` undefined and the corresponding
-link is hidden site-wide. Same for `comments` and `analytics`: undefined means the script never loads.
+link is hidden site-wide. Same for `analytics`: undefined means the script never loads.
 
 **`astro.config.ts`** is where you set `site` to your final domain (used for canonical URLs, sitemap, RSS, and OG image
 URLs). The base path is handled automatically — see [Deploying](#deploying); you normally don't touch it.

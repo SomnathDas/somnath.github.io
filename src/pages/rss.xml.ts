@@ -1,7 +1,7 @@
+import rss from "@astrojs/rss";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site-config";
 import { absoluteUrl } from "@/utils/path";
-import rss from "@astrojs/rss";
 
 export const GET = async () => {
 	const posts = await getAllPosts();

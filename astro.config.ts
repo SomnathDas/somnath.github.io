@@ -1,25 +1,22 @@
 import fs from "node:fs";
+import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
+import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import webmanifest from "astro-webmanifest";
-import { defineConfig } from "astro/config";
-import { unified } from "@astrojs/markdown-remark";
-import { expressiveCodeOptions } from "./src/site.config";
-import { siteConfig } from "./src/site.config";
-
+import rehypeExternalLinks from "rehype-external-links";
+import rehypeKatex from "rehype-katex";
+import rehypeUnwrapImages from "rehype-unwrap-images";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import { rehypeBasePath } from "./src/plugins/rehype-base-path";
 import { remarkAdmonitions } from "./src/plugins/remark-admonitions";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time";
-
-import rehypeExternalLinks from "rehype-external-links";
-import rehypeKatex from "rehype-katex";
-import rehypeUnwrapImages from "rehype-unwrap-images";
+import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 
 // Defaults to root; the deploy workflow sets BASE_PATH for subpath hosts
 // (GitHub Pages project sites). See "Base path" in the README.
@@ -29,9 +26,6 @@ const START_URL = BASE_PATH.endsWith("/") ? BASE_PATH : `${BASE_PATH}/`;
 export default defineConfig({
 	site: "https://somnathdas.github.io",
 	base: BASE_PATH,
-	image: {
-		domains: ["webmention.io"],
-	},
 	output: "static",
 	build: {
 		inlineStylesheets: "auto",

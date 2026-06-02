@@ -11,11 +11,16 @@ const year = new Date().getFullYear();
 	</div>
 	<div class="right">
 		<a href={withBase("/rss.xml")}>RSS</a>
-		{!siteConfig.hideThemeCredit && (
-			<span class="theme-credit">
-				Powered by <a href="https://github.com/AnjayGoel/astro-sienna" rel="noopener">Astro Sienna</a>
-			</span>
-		)}
+		{
+			!siteConfig.hideThemeCredit && (
+				<span class="theme-credit">
+					Powered by{" "}
+					<a href="https://github.com/AnjayGoel/astro-sienna" rel="noopener">
+						Astro Sienna
+					</a>
+				</span>
+			)
+		}
 	</div>
 </footer>
 
