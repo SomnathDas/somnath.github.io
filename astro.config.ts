@@ -7,6 +7,7 @@ import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import webmanifest from "astro-webmanifest";
 import { defineConfig } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import { expressiveCodeOptions } from "./src/site.config";
 import { siteConfig } from "./src/site.config";
 
@@ -95,26 +96,28 @@ export default defineConfig({
 		}),
 	],
 	markdown: {
-		rehypePlugins: [
-			rehypeUnwrapImages,
-			[rehypeBasePath, { base: BASE_PATH }],
-			// rehype-katex must run before rehype-external-links so the latter
-			// doesn't rewrite anchors inside katex's emitted DOM.
-			rehypeKatex,
-			[
-				rehypeExternalLinks,
-				{
-					rel: ["nofollow, noreferrer"],
-					target: "_blank",
-				},
+		processor: unified({
+			rehypePlugins: [
+				rehypeUnwrapImages,
+				[rehypeBasePath, { base: BASE_PATH }],
+				// rehype-katex must run before rehype-external-links so the latter
+				// doesn't rewrite anchors inside katex's emitted DOM.
+				rehypeKatex,
+				[
+					rehypeExternalLinks,
+					{
+						rel: ["nofollow, noreferrer"],
+						target: "_blank",
+					},
+				],
 			],
-		],
-		remarkPlugins: [remarkReadingTime, remarkDirective, remarkAdmonitions, remarkMath],
-		remarkRehype: {
-			footnoteLabelProperties: {
-				className: [""],
+			remarkPlugins: [remarkReadingTime, remarkDirective, remarkAdmonitions, remarkMath],
+			remarkRehype: {
+				footnoteLabelProperties: {
+					className: [""],
+				},
 			},
-		},
+		}),
 	},
 	// https://docs.astro.build/en/guides/prefetch/
 	prefetch: {

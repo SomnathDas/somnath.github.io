@@ -175,12 +175,7 @@ const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${enco
 			try {
 				await navigator.clipboard.writeText(url);
 			} catch {
-				const input = document.createElement("input");
-				input.value = url;
-				document.body.appendChild(input);
-				input.select();
-				try { document.execCommand("copy"); } catch {}
-				input.remove();
+				// Clipboard API unsupported or denied — silent fallback
 			}
 			btn.dataset.copied = "true";
 			btn.setAttribute("aria-label", "Copied");
