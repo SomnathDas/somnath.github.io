@@ -1,0 +1,9 @@
+packages:
+  - '.'
+
+overrides:
+  sharp: ^0.34.5
+
+peerDependencyRules:
+  allowedVersions:
+    astro: '6'
