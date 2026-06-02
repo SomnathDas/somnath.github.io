@@ -9,7 +9,6 @@ import webmanifest from "astro-webmanifest";
 import { defineConfig } from "astro/config";
 import { expressiveCodeOptions } from "./src/site.config";
 import { siteConfig } from "./src/site.config";
-import partytown from "@astrojs/partytown";
 
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
@@ -31,17 +30,13 @@ export default defineConfig({
 	base: BASE_PATH,
 	image: {
 		domains: ["webmention.io"],
+		formats: ["image/avif", "image/webp"],
 	},
 	output: "static",
 	build: {
-		inlineStylesheets: "always",
+		inlineStylesheets: "auto",
 	},
 	integrations: [
-		partytown({
-			config: {
-				forward: ["dataLayer.push"],
-			},
-		}),
 		expressiveCode(expressiveCodeOptions),
 		icon(),
 		tailwind({
@@ -87,7 +82,16 @@ export default defineConfig({
 				insertManifestLink: false,
 			},
 		}),
-		(await import("@playform/compress")).default(),
+		(await import("@playform/compress")).default({
+			CSS: true,
+			HTML: {
+				removeAttributeQuotes: false,
+				removeComments: true,
+			},
+			Image: false,
+			JavaScript: true,
+			SVG: true,
+		}),
 	],
 	markdown: {
 		rehypePlugins: [
@@ -112,7 +116,10 @@ export default defineConfig({
 		},
 	},
 	// https://docs.astro.build/en/guides/prefetch/
-	prefetch: true,
+	prefetch: {
+		prefetchAll: true,
+		defaultStrategy: "hover",
+	},
 	vite: {
 		optimizeDeps: {
 			exclude: ["@resvg/resvg-js"],

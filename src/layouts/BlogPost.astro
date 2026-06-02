@@ -28,7 +28,7 @@ const {
 } = post;
 const socialImage = ogImage ?? `/og-image/${slug}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
-const { remarkPluginFrontmatter } = await render(post);
+const { remarkPluginFrontmatter, headings } = await render(post);
 
 const authorName = siteConfig.profile?.name ?? siteConfig.author;
 const comments = siteConfig.comments;
@@ -72,84 +72,122 @@ const giscusThemes = import.meta.env.PROD
 />
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
-	<div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
 	<div class="post-shell">
-		<div class="post-main" data-pagefind-body>
-			<div id="blog-hero" class="post-header">
-				<div class="post-eyebrow">
-					Posts <span class="sep">·</span> {eyebrowDate}
-				</div>
-				{draft && <span class="draft-flag">(Draft)</span>}
-				<h1 class="post-title">{title}</h1>
-				<p class="byline">
-					{authorName && <>By {authorName}<span class="sep">·</span></>}{bylineDate}{readingTime && (
-						<>
-							<span class="sep">·</span>{readingTime}
-						</>
-					)}
-				</p>
-				{!!tags?.length && (
-					<div class="post-tags">
-						{tags.map((tag, i) => (
+		<header class="post-header-area">
+			<div class="post-header-main">
+				<div id="blog-hero" class="post-header">
+					<div class="post-eyebrow">
+						Posts <span class="sep">·</span> {eyebrowDate}
+					</div>
+					{draft && <span class="draft-flag">(Draft)</span>}
+					<h1 class="post-title">{title}</h1>
+					<p class="byline">
+						{authorName && <>By {authorName}<span class="sep">·</span></>}{bylineDate}{readingTime && (
 							<>
-								<span data-pagefind-filter="tag">{tag}</span>{i < tags.length - 1 && <span class="sep">·</span>}
+								<span class="sep">·</span>{readingTime}
 							</>
-						))}
-					</div>
-				)}
-				{updatedDate && (
-					<div class="post-updated">
-						Updated <time datetime={updatedDate.toISOString()}>
-							{formatBylineDate(updatedDate)}
-						</time>
-					</div>
+						)}
+					</p>
+					{!!tags?.length && (
+						<div class="post-tags">
+							{tags.map((tag, i) => (
+								<>
+									<span data-pagefind-filter="tag">{tag}</span>{i < tags.length - 1 && <span class="sep">·</span>}
+								</>
+							))}
+						</div>
+					)}
+					{updatedDate && (
+						<div class="post-updated">
+							Updated <time datetime={updatedDate.toISOString()}>
+								{formatBylineDate(updatedDate)}
+							</time>
+						</div>
+					)}
+				</div>
+
+				{coverImage ? (
+					<figure class="post-cover">
+						<Image
+							src={coverImage.src}
+							alt={coverImage.alt}
+							loading="eager"
+							fetchpriority="high"
+							decoding="async"
+							widths={[480, 720, 960, 1280]}
+							sizes="(max-width: 720px) 92vw, 696px"
+						/>
+					</figure>
+				) : (
+					<hr class="rule" />
 				)}
 			</div>
+			<div class="post-header-spacer"></div>
+		</header>
 
-			{coverImage ? (
-				<figure class="post-cover">
-					<Image
-						src={coverImage.src}
-						alt={coverImage.alt}
-						loading="eager"
-						fetchpriority="high"
-						decoding="async"
-						widths={[480, 720, 960, 1280]}
-						sizes="(max-width: 720px) 92vw, 696px"
-					/>
-				</figure>
-			) : (
-				<hr class="rule" />
-			)}
+		<div class="post-content-area">
+			<div class="post-main" data-pagefind-body>
+				<article class="post-article">
+					<slot />
+				</article>
 
-			<article class="post-article">
-				<slot />
-			</article>
+				<ShareButtons title={title} url={postUrl} description={description} />
 
-			<ShareButtons title={title} url={postUrl} description={description} />
+				<WebMentions />
 
-			<WebMentions />
+				<hr class="rule rule--footer" />
 
-			<hr class="rule rule--footer" />
+				{(olderPost || newerPost) && (
+					<nav class="post-pager" aria-label="More posts">
+						{olderPost && (
+							<a class="pager-link prev" data-astro-prefetch href={withBase(`/posts/${olderPost.id}/`)}>
+								<span class="pager-eyebrow">Older</span>
+								<span class="pager-title">{olderPost.data.title}</span>
+							</a>
+						)}
+						{newerPost && (
+							<a class="pager-link next" data-astro-prefetch href={withBase(`/posts/${newerPost.id}/`)}>
+								<span class="pager-eyebrow">Newer</span>
+								<span class="pager-title">{newerPost.data.title}</span>
+							</a>
+						)}
+					</nav>
+				)}
 
-			{(olderPost || newerPost) && (
-				<nav class="post-pager" aria-label="More posts">
-					{olderPost && (
-						<a class="pager-link prev" data-astro-prefetch href={withBase(`/posts/${olderPost.id}/`)}>
-							<span class="pager-eyebrow">Older</span>
-							<span class="pager-title">{olderPost.data.title}</span>
-						</a>
-					)}
-					{newerPost && (
-						<a class="pager-link next" data-astro-prefetch href={withBase(`/posts/${newerPost.id}/`)}>
-							<span class="pager-eyebrow">Newer</span>
-							<span class="pager-title">{newerPost.data.title}</span>
-						</a>
-					)}
-				</nav>
-			)}
-
-			{comments && <div class="comments" id="comments"></div>}
+				{comments && <div class="comments" id="comments"></div>}
+			</div>
+			{
+				headings.length > 0 && (
+					<aside class="post-toc-wrapper">
+						<div class="toc-card is-collapsed">
+							<h2 class="toc-title">Table of Contents</h2>
+							<nav class="toc-nav">
+								<ul class="toc-list">
+									{headings
+										.filter((h) => h.depth === 2 || h.depth === 3)
+										.map((heading, index) => (
+											<li class={`toc-item depth-${heading.depth}`}>
+												<span class="toc-marker"></span>
+												<a href={`#${heading.slug}`} class="toc-link">
+													<span class="toc-number">{index + 1}</span>
+													<span class="toc-text">{heading.text}</span>
+												</a>
+											</li>
+										))}
+								</ul>
+							</nav>
+							{headings.filter((h) => h.depth === 2 || h.depth === 3).length > 3 && (
+								<button type="button" class="toc-toggle" id="toc-toggle">
+									<span class="toggle-text">Show all</span>
+									<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</button>
+							)}
+						</div>
+					</aside>
+				)
+			}
 		</div>
 	</div>
 
@@ -174,19 +212,240 @@ const giscusThemes = import.meta.env.PROD
 </BaseLayout>
 
 <style>
-	.post-shell { display: block; position: relative; }
-
-	.reading-progress {
-		position: fixed;
-		top: 0;
-		left: 0;
-		height: 2px;
-		width: 0;
-		background: hsl(var(--theme-accent));
-		z-index: 100;
-		pointer-events: none;
-		transition: width 0.05s linear;
+	/* Expand parent layout container on posts pages */
+	:global(.wrap:has(.post-shell)) {
+		max-width: 1120px;
 	}
+
+	.post-shell {
+		display: block;
+		position: relative;
+	}
+
+	.post-header-area {
+		display: block;
+		margin-bottom: 28px;
+	}
+
+	.post-content-area {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* On mobile/tablet, show TOC above the article */
+	.post-toc-wrapper {
+		order: -1;
+		margin-bottom: 36px;
+		width: 100%;
+	}
+
+	@media (min-width: 1100px) {
+		/* Align header with the article column */
+		.post-header-area {
+			display: grid;
+			grid-template-columns: minmax(0, 760px) 240px;
+			column-gap: 64px;
+			justify-content: center;
+			max-width: none;
+			margin: 0 auto;
+		}
+		.post-header-main {
+			grid-column: 1;
+		}
+
+		/* Grid for desktop layout */
+		.post-content-area {
+			display: grid;
+			grid-template-columns: minmax(0, 760px) 240px;
+			column-gap: 64px;
+			justify-content: center;
+		}
+		.post-main {
+			grid-column: 1;
+		}
+		.post-toc-wrapper {
+			grid-column: 2;
+			order: 0;
+			margin-bottom: 0;
+			display: block;
+		}
+		.toc-card {
+			position: sticky;
+			top: 56px;
+			max-height: calc(100vh - 112px);
+			overflow-y: auto;
+			scrollbar-width: thin;
+		}
+	}
+
+	/* Timeline Box Styling */
+	.toc-card {
+		background: var(--paper);
+		border: 1px solid var(--hairline);
+		border-radius: 8px;
+		padding: 20px;
+		transition: background-color 0.35s ease, border-color 0.35s ease;
+	}
+
+	.toc-title {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: hsl(var(--theme-text) / 0.5);
+		margin: 0 0 16px;
+	}
+
+	.toc-list {
+		position: relative;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	/* The vertical line running down the timeline */
+	.toc-list::before {
+		content: "";
+		position: absolute;
+		left: 5.5px; /* Center of the 12px width marker (12/2 - 0.5px line width) */
+		top: 10px;
+		bottom: 10px;
+		width: 1px;
+		background-color: var(--hairline);
+		z-index: 1;
+		transition: background-color 0.35s ease;
+	}
+
+	.toc-item {
+		display: flex;
+		align-items: center;
+		position: relative;
+		margin-bottom: 10px;
+		z-index: 2;
+	}
+
+	.toc-item:last-child {
+		margin-bottom: 0;
+	}
+
+	/* Indent text for subheadings (depth-3) */
+	.toc-item.depth-3 .toc-link {
+		padding-left: 28px;
+	}
+
+	/* Circle marker along the timeline */
+	.toc-marker {
+		width: 12px;
+		height: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--paper);
+		border: 1px solid var(--faint);
+		border-radius: 50%;
+		margin-right: 14px;
+		flex-shrink: 0;
+		z-index: 3;
+		transition: border-color 0.25s ease, background-color 0.25s ease;
+	}
+
+	.toc-link {
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		color: hsl(var(--theme-text-muted) / 0.85);
+		font-family: var(--font-sans);
+		font-size: 13px; /* Clean, compact, and consistent size */
+		padding: 5px 10px;
+		border-radius: 6px;
+		border: 1px solid transparent;
+		transition: all 0.2s ease;
+		flex-grow: 1;
+		min-width: 0;
+	}
+
+	.toc-number {
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		color: hsl(var(--theme-text) / 0.4);
+		margin-right: 10px;
+		width: 14px;
+		text-align: right;
+		flex-shrink: 0;
+		transition: color 0.2s ease;
+	}
+
+	.toc-text {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.toc-link:hover {
+		color: hsl(var(--theme-accent));
+	}
+
+	/* Active Highlight state (Timeline Marker + Capsule Background) */
+	.toc-item.active .toc-marker {
+		border-color: hsl(var(--theme-accent));
+		background-color: hsl(var(--theme-accent));
+	}
+
+	.toc-item.active .toc-link {
+		background: var(--accent-soft);
+		border-color: hsl(var(--theme-accent) / 0.15);
+		color: hsl(var(--theme-text));
+	}
+
+	.toc-item.active .toc-number {
+		color: hsl(var(--theme-accent) / 0.7);
+	}
+
+	/* Collapsible toggle styles for mobile */
+	.toc-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		width: 100%;
+		padding: 8px;
+		margin-top: 14px;
+		background: transparent;
+		border: 1px solid var(--hairline);
+		border-radius: 6px;
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		color: hsl(var(--theme-text) / 0.6);
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.toc-toggle:hover {
+		background: var(--accent-soft);
+		color: hsl(var(--theme-accent));
+		border-color: hsl(var(--theme-accent) / 0.2);
+	}
+
+	.toc-toggle svg {
+		width: 14px;
+		height: 14px;
+		transition: transform 0.2s ease;
+	}
+
+	/* Collapsible Logic */
+	@media (max-width: 1100px) {
+		.toc-card.is-collapsed .toc-item:nth-child(n+4) {
+			display: none;
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.toc-toggle {
+			display: none;
+		}
+	}
+
 
 	.post-cover {
 		margin: 0 0 36px;
@@ -475,6 +734,7 @@ const giscusThemes = import.meta.env.PROD
 		margin: 56px 0 20px;
 		word-wrap: break-word;
 		overflow-wrap: anywhere;
+		scroll-margin-top: 60.5px;
 	}
 	.post-article h3 {
 		font-family: var(--font-serif);
@@ -487,6 +747,7 @@ const giscusThemes = import.meta.env.PROD
 		margin: 38px 0 14px;
 		word-wrap: break-word;
 		overflow-wrap: anywhere;
+		scroll-margin-top: 60.5px;
 	}
 	.post-article h4 {
 		font-family: var(--font-serif);
@@ -495,6 +756,7 @@ const giscusThemes = import.meta.env.PROD
 		line-height: 1.35;
 		color: hsl(var(--theme-text));
 		margin: 30px 0 12px;
+		scroll-margin-top: 60.5px;
 	}
 
 	.post-article a {
@@ -839,18 +1101,6 @@ const giscusThemes = import.meta.env.PROD
 		);
 	}
 
-	const progressBar = document.getElementById("reading-progress") as HTMLElement | null;
-	if (progressBar) {
-		const update = () => {
-			const h = document.documentElement;
-			const max = h.scrollHeight - h.clientHeight;
-			const pct = max > 0 ? Math.min(100, (h.scrollTop / max) * 100) : 0;
-			progressBar.style.width = pct + "%";
-		};
-		update();
-		window.addEventListener("scroll", update, { passive: true });
-		window.addEventListener("resize", update, { passive: true });
-	}
 
 	const lazyImgs = document.querySelectorAll<HTMLImageElement>(
 		'.post-article img[loading="lazy"]',
@@ -898,4 +1148,60 @@ const giscusThemes = import.meta.env.PROD
 			});
 			h.prepend(btn);
 		});
+
+	// Table of Contents Collapse/Expand Toggle
+	const toggleBtn = document.getElementById("toc-toggle");
+	const tocCard = document.querySelector(".toc-card");
+	if (toggleBtn && tocCard) {
+		toggleBtn.addEventListener("click", () => {
+			const isCollapsed = tocCard.classList.toggle("is-collapsed");
+			const text = toggleBtn.querySelector(".toggle-text");
+			const icon = toggleBtn.querySelector(".toggle-icon") as HTMLElement | null;
+			if (text) text.textContent = isCollapsed ? "Show all" : "Show less";
+			if (icon) {
+				icon.style.transform = isCollapsed ? "rotate(0deg)" : "rotate(180deg)";
+			}
+		});
+	}
+
+	// Table of Contents Active Link Highlight
+	const tocLinks = document.querySelectorAll<HTMLAnchorElement>(".post-toc-wrapper a");
+	const headingElements = Array.from(
+		document.querySelectorAll<HTMLHeadingElement>(".post-article h2, .post-article h3")
+	);
+
+	if (tocLinks.length > 0 && headingElements.length > 0) {
+		const updateActiveHeading = () => {
+			let activeId: string | null = null;
+			const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
+
+			if (isAtBottom) {
+				activeId = headingElements[headingElements.length - 1].id;
+			} else {
+				for (const heading of headingElements) {
+					const rect = heading.getBoundingClientRect();
+					if (rect.top < 120) {
+						activeId = heading.id;
+					} else {
+						break;
+					}
+				}
+			}
+
+			tocLinks.forEach((link) => {
+				const href = link.getAttribute("href");
+				const item = link.closest(".toc-item");
+				if (activeId && href === `#${activeId}`) {
+					link.classList.add("active");
+					if (item) item.classList.add("active");
+				} else {
+					link.classList.remove("active");
+					if (item) item.classList.remove("active");
+				}
+			});
+		};
+
+		window.addEventListener("scroll", updateActiveHeading, { passive: true });
+		updateActiveHeading();
+	}
 </script>

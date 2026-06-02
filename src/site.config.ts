@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 	lang: "en-US",
 	ogLocale: "en_US",
 	sortPostsByUpdatedDate: false,
-	title: "Astro Sienna",
+	title: "Somnath Das",
 	hideThemeCredit: false,
 	profile: {
 		name: "Somnath Das",
@@ -35,11 +35,6 @@ export const siteConfig: SiteConfig = {
 	// 	repoId: "...",
 	// 	category: "General",
 	// 	categoryId: "...",
-	// },
-	// Uncomment to enable analytics. Both providers load via Partytown.
-	// analytics: {
-	// 	googleAnalyticsId: "G-XXXXXXX",
-	// 	goatcounterUrl: "https://your-handle.goatcounter.com/count",
 	// },
 };
 

@@ -5,6 +5,8 @@ import {absoluteUrl, withBase} from "@/utils/path";
 import "../styles/global.css";
 // Preloaded body-font subset URL; everything else loads via @font-face.
 import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import jetbrainsMonoLatin from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 
 type Props = SiteMeta;
 
@@ -15,9 +17,7 @@ const siteTitle = `${title} ${titleSeparator} ${siteConfig.title}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const socialImageURL = absoluteUrl(ogImage ? ogImage : "/social-card.png", Astro.site);
 
-const analytics = siteConfig.analytics;
-const gaId = analytics?.googleAnalyticsId;
-const goatcounter = analytics?.goatcounterUrl;
+const comments = siteConfig.comments;
 ---
 
 <meta charset="utf-8"/>
@@ -43,7 +43,19 @@ const goatcounter = analytics?.goatcounterUrl;
 <meta content={description} name="description"/>
 <meta content={siteConfig.author} name="author"/>
 
+<!-- DNS Prefetch / Preconnect -->
+{siteConfig.webmentions && (
+	<>
+		<link rel="preconnect" href="https://webmention.io" crossorigin />
+		<link rel="dns-prefetch" href="https://webmention.io" />
+	</>
+)}
+{comments && <link rel="preconnect" href="https://giscus.app" crossorigin />}
+
+<!-- Critical Font Preloading -->
 <link rel="preload" as="font" type="font/woff2" href={newsreaderLatin} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={interLatin} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={jetbrainsMonoLatin} crossorigin />
 
 {/* Default theme-color; ThemeProvider rewrites it to the active theme's bg. */}
 <meta content="#f6f1e6" name="theme-color"/>
@@ -88,20 +100,3 @@ const goatcounter = analytics?.goatcounterUrl;
     }
 
 <meta content={Astro.generator} name="generator"/>
-
-{gaId && (
-    <>
-        <script is:inline type="text/partytown" async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline type="text/partytown" set:html={`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${gaId}');
-`}></script>
-    </>
-)}
-{goatcounter && (
-    <script is:inline type="text/partytown" data-goatcounter={goatcounter}
-            async src="//gc.zgo.at/count.js"></script>
-)}
-

@@ -35,14 +35,6 @@ export interface CommentsConfig {
 	categoryId: string;
 }
 
-/** Optional analytics config — each provider is opt-in. */
-export interface AnalyticsConfig {
-	/** Google Analytics measurement id (e.g. "G-XXXXXXX"). */
-	googleAnalyticsId?: string;
-	/** Goatcounter endpoint URL (e.g. "https://example.goatcounter.com/count"). */
-	goatcounterUrl?: string;
-}
-
 export interface SiteConfig {
 	/** Site-wide display name; fallback for profile.name. */
 	author: string;
@@ -59,8 +51,7 @@ export interface SiteConfig {
 	profile?: ProfileConfig;
 	/** Giscus comments; skipped if absent. */
 	comments?: CommentsConfig;
-	/** Analytics; each provider opt-in. */
-	analytics?: AnalyticsConfig;
+
 	webmentions?: {
 		link: string;
 		pingback?: string;
