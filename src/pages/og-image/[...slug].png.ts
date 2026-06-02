@@ -24,6 +24,13 @@ const ogOptions: SatoriOptions = {
 
 const SEP = " · ";
 
+function cleanText(text: string): string {
+	return text
+		.replace(/[\u200a\u2009\u200b\u2002\u2003\ufeff]/g, " ")
+		.replace(/\s+/g, " ")
+		.trim();
+}
+
 const titleClass = (title: string) =>
 	title.length > 80
 		? "text-5xl leading-tight mb-10"
@@ -80,11 +87,11 @@ export async function GET(context: APIContext) {
 
 	const svg = await satori(
 		markup({
-			eyebrow: `Posts${SEP}${formatEyebrowDate(date)}`,
-			title,
-			byline: bylineParts.join(SEP),
-			tagsLine: tags.join(SEP),
-			host,
+			eyebrow: cleanText(`Posts${SEP}${formatEyebrowDate(date)}`),
+			title: cleanText(title),
+			byline: cleanText(bylineParts.join(SEP)),
+			tagsLine: cleanText(tags.join(SEP)),
+			host: cleanText(host),
 		}),
 		ogOptions,
 	);
