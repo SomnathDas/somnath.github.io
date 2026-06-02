@@ -11,6 +11,10 @@ export interface ProfileConfig {
 	twitter?: string;
 	/** Mastodon profile URL. Leave empty to hide. */
 	mastodon?: string;
+	/** pwn.college profile URL. Leave empty to hide. */
+	pwnCollege?: string;
+	/** ctftime.org profile URL. Leave empty to hide. */
+	ctfTime?: string;
 	/** Schema.org Person.jobTitle. */
 	jobTitle?: string;
 	/** Schema.org Person.worksFor.name (current employer). */

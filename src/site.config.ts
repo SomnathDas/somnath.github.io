@@ -19,7 +19,9 @@ export const siteConfig: SiteConfig = {
 	hideThemeCredit: false,
 	profile: {
 		name: "Somnath Das",
-		github: "https://github.com/SomnathDas",
+		// github: "https://github.com/SomnathDas",
+		pwnCollege: "https://pwn.college/hacker/46389",
+		ctfTime: "https://ctftime.org/user/167233",
 		// email: "john@example.com",
 		// linkedin: "https://www.linkedin.com/in/example/",
 		// jobTitle: "Software Engineer",
@@ -39,10 +41,10 @@ export const menuLinks: { path: string; title: string }[] = [
 		path: "/posts/",
 		title: "Posts",
 	},
-	{
-		path: "/showcase/",
-		title: "Showcase",
-	},
+	// {
+	// 	path: "/showcase/",
+	// 	title: "Showcase",
+	// },
 	{
 		path: "/about/",
 		title: "About",

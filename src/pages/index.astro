@@ -61,6 +61,26 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 				)
 			}
 			{
+				profile?.pwnCollege && (
+					<>
+						<a href={profile.pwnCollege} rel="noreferrer" target="_blank">
+							pwn.college
+						</a>
+						<span class="sep">·</span>
+					</>
+				)
+			}
+			{
+				profile?.ctfTime && (
+					<>
+						<a href={profile.ctfTime} rel="noreferrer" target="_blank">
+							ctftime.org
+						</a>
+						<span class="sep">·</span>
+					</>
+				)
+			}
+			{
 				profile?.linkedin && (
 					<>
 						<a href={profile.linkedin} rel="noreferrer" target="_blank">

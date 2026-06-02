@@ -22,6 +22,8 @@ const personSameAs = [
 	profile?.github,
 	profile?.twitter,
 	profile?.mastodon,
+	profile?.pwnCollege,
+	profile?.ctfTime,
 ].filter((s): s is string => Boolean(s));
 
 const avatarUrl = profile?.avatar ? absoluteUrl(profile.avatar, Astro.site) : undefined;
