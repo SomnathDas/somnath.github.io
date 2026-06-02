@@ -4,8 +4,7 @@ date: 2024-11-17T17:29:49.379Z
 draft: false
 slug: "handcrafting-x64-elf-from-specification-to-bytes"
 description: "We will go through \"Compilation Process\", \"ELF Specification\", \"Encoding x86–64 assembly instructions\" in brief and finally put it all together to create a basic program..."
-toc: true
-tocBorder: true
+ogImageFromThumbnail: true
 images:
   - image-1.png
 ---

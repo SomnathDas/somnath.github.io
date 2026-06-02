@@ -20,10 +20,14 @@ const idx = sortedAll.findIndex((p) => p.id === post.id);
 const newerPost = idx > 0 ? sortedAll[idx - 1] : undefined;
 const olderPost = idx >= 0 && idx < sortedAll.length - 1 ? sortedAll[idx + 1] : undefined;
 const {
-	data: { coverImage, description, ogImage, publishDate, title, updatedDate, tags, draft },
+	data: { coverImage, description, images, ogImage, publishDate, title, updatedDate, tags, draft, ogImageFromThumbnail },
 	id: slug,
 } = post;
-const socialImage = ogImage ?? `/og-image/${slug}.png`;
+const socialImage =
+	ogImage ??
+	(ogImageFromThumbnail
+		? (coverImage?.src?.src ?? (images && images.length > 0 ? images[0].src : `/og-image/${slug}.png`))
+		: `/og-image/${slug}.png`);
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { remarkPluginFrontmatter, headings } = await render(post);
 
@@ -226,7 +230,7 @@ const readingTime: string =
 <style>
 	/* Expand parent layout container on posts pages */
 	:global(.wrap:has(.post-shell)) {
-		max-width: 1120px;
+		max-width: 1160px;
 	}
 
 	.post-shell {
@@ -255,7 +259,7 @@ const readingTime: string =
 		/* Align header with the article column */
 		.post-header-area {
 			display: grid;
-			grid-template-columns: minmax(0, 760px) 240px;
+			grid-template-columns: minmax(0, 760px) 280px;
 			column-gap: 64px;
 			justify-content: center;
 			max-width: none;
@@ -268,7 +272,7 @@ const readingTime: string =
 		/* Grid for desktop layout */
 		.post-content-area {
 			display: grid;
-			grid-template-columns: minmax(0, 760px) 240px;
+			grid-template-columns: minmax(0, 760px) 280px;
 			column-gap: 64px;
 			justify-content: center;
 		}
@@ -286,7 +290,6 @@ const readingTime: string =
 			top: 56px;
 			max-height: calc(100vh - 112px);
 			overflow-y: auto;
-			scrollbar-width: thin;
 		}
 	}
 
@@ -300,6 +303,7 @@ const readingTime: string =
 			background-color 0.35s ease,
 			border-color 0.35s ease;
 	}
+
 
 	.toc-title {
 		font-family: var(--font-mono);

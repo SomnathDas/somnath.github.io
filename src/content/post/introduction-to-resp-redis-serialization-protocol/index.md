@@ -4,8 +4,7 @@ date: 2023-08-24T05:47:11.160Z
 draft: false
 slug: "introduction-to-resp-redis-serialization-protocol"
 description: "Introduction to RESP (Redis Serialization Protocol ) A practical introduction to Redis Serialization Protocol (RESP) to be able to communicate with any Redis-server without using a..."
-toc: true
-tocBorder: true
+ogImageFromThumbnail: false
 images:
   - image-1.png
 ---

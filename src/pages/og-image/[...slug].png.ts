@@ -99,7 +99,11 @@ export async function GET(context: APIContext) {
 
 export async function getStaticPaths() {
 	const posts = await getAllPosts();
-	const filtered = posts.filter(({ data }) => !data.ogImage);
+	const filtered = posts.filter(
+		({ data }) =>
+			!data.ogImage &&
+			!(data.ogImageFromThumbnail && (data.coverImage || (data.images && data.images.length > 0)))
+	);
 	const items = await Promise.all(
 		filtered.map(async (post) => {
 			const { remarkPluginFrontmatter } = await render(post);

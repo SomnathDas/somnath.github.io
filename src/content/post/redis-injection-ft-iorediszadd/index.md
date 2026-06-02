@@ -4,8 +4,7 @@ date: 2024-07-29T18:12:37.411Z
 draft: false
 slug: "redis-injection-ft-iorediszadd"
 description: "Redis-injection ft. ioredis.zadd() This article covers the Redis-injection in a challenge of corCTF 2024 where in-validated input is combined with the usage of a critical database specific..."
-toc: true
-tocBorder: true
+ogImageFromThumbnail: false
 images:
   - image-1.png
 ---

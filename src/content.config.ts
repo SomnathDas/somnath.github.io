@@ -30,7 +30,9 @@ const post = defineCollection({
 					.optional(),
 				description: z.string().min(10).max(300),
 				draft: z.boolean().default(false),
+				images: z.array(image()).optional(),
 				ogImage: z.string().optional(),
+				ogImageFromThumbnail: z.boolean().default(false),
 				publishDate: z
 					.string()
 					.or(z.date())

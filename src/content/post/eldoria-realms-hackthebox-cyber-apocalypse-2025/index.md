@@ -4,8 +4,7 @@ date: 2025-03-30T19:10:03.809Z
 draft: false
 slug: "eldoria-realms-hackthebox-cyber-apocalypse-2025"
 description: "Eldoria Realms is a \"web exploitation\" challenge featured in HTB’s Cyber Apocalypse 2025 CTF. This challenge involved exploiting Ruby's Class Pollution to achieve SSRF, then using SSRF to..."
-toc: true
-tocBorder: true
+ogImageFromThumbnail: false
 images:
   - image-1.png
 ---

@@ -11,7 +11,7 @@ export const siteConfig: SiteConfig = {
 			year: "numeric",
 		},
 	},
-	description: "A blog about whatever I learn whenever I poke around computers.",
+	description: "A blog documenting what I learn every time I poke around computers and they manage not to blow up. Here, I write about CTF challenges, security research, and the inner workings of these weird machines.",
 	lang: "en-US",
 	ogLocale: "en_US",
 	sortPostsByUpdatedDate: false,
