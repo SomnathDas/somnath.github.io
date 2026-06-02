@@ -30,7 +30,6 @@ export default defineConfig({
 	base: BASE_PATH,
 	image: {
 		domains: ["webmention.io"],
-		formats: ["image/avif", "image/webp"],
 	},
 	output: "static",
 	build: {
@@ -85,8 +84,10 @@ export default defineConfig({
 		(await import("@playform/compress")).default({
 			CSS: true,
 			HTML: {
-				removeAttributeQuotes: false,
-				removeComments: true,
+				"html-minifier-terser": {
+					removeAttributeQuotes: false,
+					removeComments: true,
+				},
 			},
 			Image: false,
 			JavaScript: true,
